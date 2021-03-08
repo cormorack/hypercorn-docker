@@ -8,6 +8,7 @@ use_max_workers = None
 if max_workers_str:
     use_max_workers = int(max_workers_str)
 web_concurrency_str = os.getenv("WEB_CONCURRENCY", None)
+worker_class_str = os.getenv("WORKER_CLASS", "asyncio")
 
 host = os.getenv("HOST", "0.0.0.0")
 port = os.getenv("PORT", "80")
@@ -33,7 +34,6 @@ use_accesslog = accesslog_var or None
 errorlog_var = os.getenv("ERROR_LOG", "-")
 use_errorlog = errorlog_var or None
 graceful_timeout_str = os.getenv("GRACEFUL_TIMEOUT", "120")
-timeout_str = os.getenv("TIMEOUT", "120")
 keepalive_str = os.getenv("KEEP_ALIVE", "5")
 
 # Hypercorn config variables
@@ -41,11 +41,10 @@ loglevel = use_loglevel
 workers = web_concurrency
 bind = use_bind
 errorlog = use_errorlog
-worker_tmp_dir = "/dev/shm"
 accesslog = use_accesslog
 graceful_timeout = int(graceful_timeout_str)
-timeout = int(timeout_str)
-keepalive = int(keepalive_str)
+keep_alive_timeout = int(keepalive_str)
+worker_class = worker_class_str
 
 
 # For debugging and testing
@@ -54,8 +53,8 @@ log_data = {
     "workers": workers,
     "bind": bind,
     "graceful_timeout": graceful_timeout,
-    "timeout": timeout,
-    "keepalive": keepalive,
+    "worker_class": worker_class,
+    "keepalive": keep_alive_timeout,
     "errorlog": errorlog,
     "accesslog": accesslog,
     # Additional, non-hypercorn variables
